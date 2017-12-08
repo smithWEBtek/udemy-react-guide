@@ -5,32 +5,12 @@ import './App.css';
 class App extends Component {
   state = {
     persons: [
-      { name: "Max", age: 28 },
-      { name: "Manu", age: 29 },
-      { name: "Stephanie", age: 26 }
+      { id: 'k1', name: "Max", age: 28 },
+      { id: 'k2', name: "Manu", age: 29 },
+      { id: 'k3', name: "Stephanie", age: 26 }
     ],
     otherState: 'some other value', 
     showPersons: false
-  }
-
-  switchNameHandler = (newName) => {
-    this.setState({
-      persons: [
-        { name: newName, age: 28 },
-        { name: "Manu", age: 29 },
-        { name: "Stephanie", age: 27 }
-      ]
-    })
-  }
-
-  nameChangedHandler = (event) => {
-    this.setState({
-      persons: [
-        { name: "Max", age: 28 },
-        { name: event.target.value, age: 29 },
-        { name: "Stephanie", age: 26 }
-      ]
-    })
   }
 
   togglePersonsHandler = () => {
@@ -44,6 +24,41 @@ class App extends Component {
     })
   }
 
+  nameChangedHandler = (event, id) => {
+    // const person = this.state.persons.find(person => person.id === id);
+    // assign variable to id passed in by findIndex method on existing state.persons arr
+    const personIndex = this.state.persons.findIndex(p=> {
+      return p.id === id;
+    })
+    // const person = this.state.persons[personIndex];
+    // const person = Object.assign({}, this.state.persons[personIndex])
+    // create separate variable (don't mutate state directly) using spread & personIndex var
+    const person = {
+      ...this.state.persons[personIndex]
+    }
+    // change the value of the person.name (again, not directly mutating state)
+    person.name = event.target.value;
+
+    // const persons = this.state.persons.slice()
+    // now, create a separate copy of this.state.persons arr
+    const persons = [...this.state.persons]
+    
+    // using the personIndex, find that person in the coppied array, and change it to the value of the 'person copy' from original state (safely making the change to a 'person copy', and inserting that into the copy of the original array)
+    persons[personIndex] = person
+
+    // now that we have an updated version of persons, we update orig w/ setState()
+    this.setState({ persons: persons }) 
+  }
+
+  deletePersonHandler = (personIndex) => {
+    // const persons = this.state.persons.slice()
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1)
+    this.setState({
+      persons: persons,
+    })  
+  }
+
   render() {
     const style = {
       backgroundColor: 'white',
@@ -54,28 +69,22 @@ class App extends Component {
     }
 
     let persons = null;
-
     if (this.state.showPersons){
-      persons = (
-      <div>
+      persons = 
+      this.state.persons.map((person, index) =>
         <Person 
-          name={this.state.persons[0].name} 
-          age={this.state.persons[0].age} />
-        <Person 
-          name={this.state.persons[1].name} 
-          age={this.state.persons[1].age} 
-          click={this.switchNameHandler.bind(this, "Maximus!")}
-          changed={this.nameChangedHandler}>My Hobbies: Racing</Person>
-        <Person 
-          name={this.state.persons[2].name} 
-          age={this.state.persons[2].age} />
-      </div>
+          click={() => this.deletePersonHandler(index)}
+          name={person.name}
+          age={person.age}
+          changed={(event)=>this.nameChangedHandler(event, person.id)}
+          key={person.id}
+        />
       )
     }
 
     return (
       <div className="App"> 
-        <h1>Hi this is a React App!</h1>    
+        <h1>Hi this is a React App!</h1>
         <p>This is really working!!!</p>
         <button onClick={this.togglePersonsHandler} style={style}>Toggle Persons</button>
         {persons}

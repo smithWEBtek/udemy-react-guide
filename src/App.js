@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Person from './Person/Person';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import classes from './App.css';
  
 class App extends Component {
@@ -14,44 +15,29 @@ class App extends Component {
   }
 
   togglePersonsHandler = () => {
-    // const doesShow = this.state.showPersons
-    // this.setState({
-    //   showPersons: !doesShow
-    // })
-    // this also works:
+    const doesShow = this.state.showPersons
     this.setState({
-      showPersons: !this.state.showPersons
+      showPersons: !doesShow
     })
   }
 
   nameChangedHandler = (event, id) => {
-    // const person = this.state.persons.find(person => person.id === id);
-    // assign variable to id passed in by findIndex method on existing state.persons arr
     const personIndex = this.state.persons.findIndex(p=> {
       return p.id === id;
     })
-    // const person = this.state.persons[personIndex];
-    // const person = Object.assign({}, this.state.persons[personIndex])
-    // create separate variable (don't mutate state directly) using spread & personIndex var
+
     const person = {
       ...this.state.persons[personIndex]
     }
-    // change the value of the person.name (again, not directly mutating state)
     person.name = event.target.value;
 
-    // const persons = this.state.persons.slice()
-    // now, create a separate copy of this.state.persons arr
     const persons = [...this.state.persons]
-    
-    // using the personIndex, find that person in the coppied array, and change it to the value of the 'person copy' from original state (safely making the change to a 'person copy', and inserting that into the copy of the original array)
     persons[personIndex] = person
-
-    // now that we have an updated version of persons, we update orig w/ setState()
+    
     this.setState({ persons: persons }) 
   }
 
   deletePersonHandler = (personIndex) => {
-    // const persons = this.state.persons.slice()
     const persons = [...this.state.persons];
     persons.splice(personIndex, 1)
     this.setState({
@@ -64,18 +50,20 @@ class App extends Component {
     let btnClass = '';
 
     if (this.state.showPersons){
-      persons =
-      this.state.persons.map((person, index) =>
+      persons = (
         <div>
-          <Person
-            click={() => this.deletePersonHandler(index)}
-            name={person.name}
-            age={person.age}
-            changed={(event)=>this.nameChangedHandler(event, person.id)}
-            key={person.id}
-          />
+          {this.state.persons.map((person, index) => {
+            return <ErrorBoundary key={person.id}>
+              <Person
+                click={() => this.deletePersonHandler(index)}
+                name={person.name}
+                age={person.age}
+                changed={(event)=>this.nameChangedHandler(event, person.id)}/>
+            </ErrorBoundary>
+            }
+          )}
         </div>
-      );
+      )
       btnClass = classes.Red;
     }
 

@@ -5,4 +5,19 @@
   box-shadow: 0 2px 3px #ccc;
   padding: 16px; 
   text-align: center;
+  background-color: rgba(216, 230, 233, 0.322);
+}
+
+@media (min-width: 400px) {
+  .Person {
+    width: 350px;
+  }
+}
+
+.Tagline {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+
+:global .NameTag {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif
 }

@@ -5,7 +5,7 @@ import classes from './App.css';
  
 class App extends Component {
   constructor(props){
-    super(props); 
+    super(props);
     console.log("[App.js] inside constructor: ", props);
     this.state = {
       persons: [
@@ -24,16 +24,7 @@ class App extends Component {
   componentDidMount(){
     console.log('[App.js] inside componentDidMount()')
   }
-
-  // state = {
-  //   persons: [
-  //     { id: 'k1', name: "Max", age: 28 },
-  //     { id: 'k2', name: "Manu", age: 29 },
-  //     { id: 'k3', name: "Stephanie", age: 26 }
-  //   ],
-  //   showPersons: false
-  // }
-
+ 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons
     this.setState({
@@ -70,12 +61,10 @@ class App extends Component {
     let persons = null;
 
     if (this.state.showPersons){
-      persons = (      
-        <Persons 
+      persons = <Persons 
           persons={this.state.persons}
           clicked={this.deletePersonHandler}
-          changed={this.nameChangedHandler} />
-      );
+          changed={this.nameChangedHandler} />;
     }
 
     return (
